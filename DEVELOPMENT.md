@@ -17,6 +17,13 @@ docker run --rm -t \
     --name terraform \
     -v ${PWD}:/workspace/source \
     -w /workspace/source \
+    hashicorp/terraform:0.13.3 init
+
+docker run --rm -t \
+    -u 1000 \
+    --name terraform \
+    -v ${PWD}:/workspace/source \
+    -w /workspace/source \
     hashicorp/terraform:0.13.3 validate
 ```
 

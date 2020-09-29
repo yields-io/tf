@@ -16,6 +16,8 @@ jobs:
 
       - run: echo "::set-env name=VERSION::$(git describe --tags | sed -e 's/v//g')"
 
+      - run: terraform init
+
       - run: terraform validate
 
   release:
