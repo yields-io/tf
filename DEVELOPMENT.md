@@ -7,6 +7,8 @@ This repository contains the [Terraform](https://www.terraform.io/) specs for cr
 
 Setup instructions are documented in the [`README`](README.md).
 
+GitHub Actions requires a `GH_TOKEN` [secret](https://docs.github.com/en/free-pro-team@latest/actions/reference/encrypted-secrets) for creating releases.
+
 ### pre-commit
 
 Add a [`pre-commit`](https://git-scm.com/docs/githooks#_pre_commit) hook in your local checkout
@@ -26,6 +28,8 @@ docker run --rm -t \
     -w /workspace/source \
     hashicorp/terraform:0.13.3 validate
 ```
+
+**Note**: the release pipeline will fail if the specs are invalid.
 
 ## Commit style guide
 
