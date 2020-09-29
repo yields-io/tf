@@ -1,0 +1,44 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v[0-9].[0-9]+.[0-9]+'
+
+jobs:
+  validate:
+    name: validate
+    runs-on: ubuntu-18.04
+    container:
+      image: hashicorp/terraform:0.13.3
+    steps:
+      - uses: actions/checkout@master
+
+      - run: echo "::set-env name=VERSION::$(git describe --tags | sed -e 's/v//g')"
+
+      - run: terraform validate
+
+  release:
+    name: release
+    needs: validate
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@master
+
+      - run: echo "::set-env name=VERSION::$(git describe --tags)"
+
+      - run: |
+          docker run --rm -i -u root \
+              -v ${{ github.workspace }}:/workspace/source \
+              -w /workspace/source \
+              lazybit/conventional-changelog-cli -i CHANGELOG.md -s -t ${VERSION}
+
+      - uses: actions/create-release@latest
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        with:
+          tag_name: ${{ env.VERSION }}
+          release_name: Release ${{ env.VERSION }}
+          body_path: "${{ github.workspace }}/CHANGELOG.md"
+          draft: false
+          prerelease: false
