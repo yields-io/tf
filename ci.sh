@@ -41,7 +41,7 @@ docker run --rm -t \
     -e PROJECT=${PROJECT_ID} \
     -e NAME=${NAME} \
     -e PARENT_DOMAIN=${PARENT_DOMAIN} \
-    hashicorp/terraform:${TERRAFORM_VERSION} init
+    build.yields.io/terraform init
 
 docker run --rm -t \
     -u 1000 \
@@ -50,7 +50,7 @@ docker run --rm -t \
     -e GOOGLE_APPLICATION_CREDENTIALS=/account.json \
     -v ${PWD}:/workspace/source \
     -w /workspace/source \
-    hashicorp/terraform:${TERRAFORM_VERSION} plan --var-file terraform.tfvars -no-color
+    build.yields.io/terraform plan --var-file terraform.tfvars -no-color
 
 docker run --rm -t \
     -u 1000 \
@@ -59,14 +59,14 @@ docker run --rm -t \
     -e GOOGLE_APPLICATION_CREDENTIALS=/account.json \
     -v ${PWD}:/workspace/source \
     -w /workspace/source \
-    hashicorp/terraform:${TERRAFORM_VERSION} plan --var-file terraform.tfvars -no-color -out=tfplan.out
+    build.yields.io/terraform plan --var-file terraform.tfvars -no-color -out=tfplan.out
 
 docker run --rm -t \
     -u 1000 \
     --name terraform \
     -v ${PWD}:/workspace/source \
     -w /workspace/source \
-    hashicorp/terraform:${TERRAFORM_VERSION} show -json tfplan.out |jq
+    build.yields.io/terraform show -json tfplan.out |jq
 
 [ ! "${DRY_RUN}" ] || docker run --rm -t \
     -v ${PWD}:/workspace/source \
@@ -74,4 +74,4 @@ docker run --rm -t \
     -e GOOGLE_APPLICATION_CREDENTIALS=/account.json \
     -w /workspace/source \
     --entrypoint terraform \
-    hashicorp/terraform:${TERRAFORM_VERSION} apply -auto-approve --var-file terraform.tfvars
+    build.yields.io/terraform apply -auto-approve --var-file terraform.tfvars
