@@ -22,7 +22,12 @@ resource "google_container_node_pool" "default" {
   name       = "default"
   location   = var.region
   cluster    = google_container_cluster.primary.name
-  initial_node_count = 1
+  initial_node_count = 3
+  node_locations = var.zones
+  autoscaling {
+    min_node_count = 1
+    max_node_count = 3
+  }
   node_config {
     preemptible  = true
     machine_type = "n1-standard-4"
@@ -39,6 +44,7 @@ resource "google_container_node_pool" "spark" {
   location   = var.region
   cluster    = google_container_cluster.primary.name
   initial_node_count = 1
+  node_locations = var.zones
   autoscaling {
     min_node_count = 1
     max_node_count = 3
